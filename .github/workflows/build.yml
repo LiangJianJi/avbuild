@@ -28,32 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         config: [default,lite,lite-lto] # lto reduce about 300KB for lite build
-        target: [macOS,iOS,iOSSimulator,visionOS,visionOSSimulator,tvOS,tvOSSimulator,macCatalyst]
-        exclude:
-          - config: default
-            target: iOS
-          - config: default
-            target: iOSSimulator
-          - config: lite
-            target: iOSSimulator
-          - config: default
-            target: macCatalyst
-          - config: lite
-            target: macCatalyst
-          - config: default
-            target: tvOS
-          - config: default
-            target: tvOSSimulator
-          - config: lite
-            target: tvOSSimulator
-          - config: default
-            target: visionOS
-          - config: lite # llvm-ar-17 merged visionOS lto libs has wrong contents (/,//,*.o/)
-            target: visionOS
-          - config: default
-            target: visionOSSimulator
-          - config: lite
-            target: visionOSSimulator
+        target: [macOS]
     steps:
     - uses: actions/checkout@v5
     - name: Setup Xcode (Auto Detect)
@@ -190,6 +165,7 @@ jobs:
         set HOME=%CD%
         set FFSRC=%CD%\ffmpeg-%FF_VERSION%
         set BUILD_NOW=true
+        set CL=/MD
         tools\vcbuild.bat VS2022 %TARGET_OS%10 all
     - name: Make SDK
       shell: cmd
@@ -264,6 +240,7 @@ jobs:
         set FFSRC=%CD%\ffmpeg-%FF_VERSION%
         set BUILD_NOW=true
         set USER_OPT=--enable-libshaderc
+        set CL=/MD
         tools\vcbuild.bat VS2022 %TARGET_OS%10 all
     - name: Make SDK
       shell: cmd
@@ -401,9 +378,3 @@ jobs:
       with:
         name: FFmpeg.xcframework-${{ env.FF_VERSION }}-lite
         path: FFmpeg.xcframework-${{ env.FF_VERSION }}-lite.tar.xz
-    - name: Upload to SourceForge
-      if: (github.event_name != 'pull_request')
-      shell: bash
-      run:  |
-        brew install hudochenkov/sshpass/sshpass
-        sshpass -p $SF_PW_MAPPED scp -o StrictHostKeyChecking=no FFmpeg.xcframework-${{ env.FF_VERSION }}-lite.tar.xz $SF_USER_MAPPED,avbuild@frs.sourceforge.net:/home/frs/project/a/av/avbuild/xcframework/

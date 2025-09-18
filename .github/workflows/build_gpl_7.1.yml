@@ -26,12 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         config: [lite]
-        target: [macOS,iOS]
-        exclude:
-          - config: default
-            target: iOSSimulator
-          - config: default
-            target: macCatalyst
+        target: [macOS]
     steps:
     - uses: actions/checkout@v5
     - name: Setup Xcode (Auto Detect)
@@ -151,6 +146,7 @@ jobs:
         set FFSRC=%CD%\ffmpeg-%FF_VERSION%
         set BUILD_NOW=true
         set USER_OPT=--enable-libshaderc
+        set CL=/MD
         tools\vcbuild.bat VS2022 %TARGET_OS%10 x64
     - name: Make SDK
       shell: cmd
