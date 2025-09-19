@@ -146,8 +146,7 @@ jobs:
         set FFSRC=%CD%\ffmpeg-%FF_VERSION%
         set BUILD_NOW=true
         set USER_OPT=--enable-libshaderc
-        set CL=/MD
-        tools\vcbuild.bat VS2022 %TARGET_OS%10 x64
+        tools\vcbuild.bat VS2022 %TARGET_OS%10 x64 /MD
     - name: Make SDK
       shell: cmd
       run: |
